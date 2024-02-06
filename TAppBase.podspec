@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.description  = "TAppBase."
   s.homepage     = "https://www.apple.com"
   
-  s.license      = "MIT"
+  s.license      = { :type => "MIT", :file => "LICENSE" }
   s.author       = { "tang" => "tang@apple.com" }
   s.source       = { :git => "https://github.com/tang4595/", :tag => $version }
   s.source_files = "TAppBase/Classes/**/*"
