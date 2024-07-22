@@ -22,8 +22,7 @@ Pod::Spec.new do |s|
   s.dependency 'TPKeyboardAvoiding'
   s.dependency 'RTRootNavigationController'
 
-  s.platform = :ios, "11.0"
-  s.swift_versions = ['5.0', '5.1', '5.2', '5.3', '5.4']
+  s.platform = :ios, "12.0"
   s.pod_target_xcconfig = { 'c' => '-Owholemodule' }
 end
 
