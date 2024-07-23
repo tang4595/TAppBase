@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SwifterSwift
 
 public enum AppStyle {
     case title

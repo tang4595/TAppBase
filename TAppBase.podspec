@@ -16,7 +16,6 @@ Pod::Spec.new do |s|
   }
 
   s.dependency 'SnapKit'
-  s.dependency 'SwifterSwift'
   s.dependency 'RxSwift'
   s.dependency 'RxCocoa'
   s.dependency 'TPKeyboardAvoiding'
