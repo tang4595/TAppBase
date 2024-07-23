@@ -36,6 +36,17 @@ public class AppSkin {
 
 public extension AppSkin {
     
+    func setupColors(_ colorsPlistBundlePath: String?) {
+        guard
+            let path = colorsPlistBundlePath,
+            let colors = NSDictionary(contentsOfFile: path ?? "") as? [String: String]
+        else { return }
+        self.colorPlist = colors
+    }
+}
+
+public extension AppSkin {
+    
     func color(key: String) -> UIColor {
         if let color = self.colors[key] {
             return color
@@ -44,7 +55,7 @@ public extension AppSkin {
         if self.colorPlist.count == 0 {
             let bundle = isDark ? darkBundle : normalBundle
             let path = bundle?.path(forResource: "AppColors", ofType: "plist")
-            self.colorPlist = NSDictionary(contentsOfFile: path ?? "") as? [String: String] ?? [:]
+            setupColors(path)
         }
         
         let value = self.colorPlist[key] ?? "#060606"
