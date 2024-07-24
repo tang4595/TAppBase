@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Bundle {
+public extension Bundle {
     
     static func frameworkBundle(moduleName: String) -> Bundle? {
         if var bundleURL = Bundle.main.url(forResource: "Frameworks", withExtension: nil) {
@@ -43,5 +43,49 @@ extension Bundle {
     
     static func fetchFileURL(fileName: String, moduleName: String, bundleName: String) -> URL? {
         return URL(string: fetchFilePath(fileName: fileName, moduleName: moduleName, bundleName: bundleName))
+    }
+}
+
+public extension String {
+    
+    /// 工程内图片
+    public var image: UIImage? {
+        return UIImage(named: self)
+    }
+    
+    /// 获取Bundle中的图片
+    public func image(in bundle: Bundle?) -> UIImage? {
+        return UIImage(named: self, in: bundle, with: nil)
+    }
+    
+    /// 多语言读取
+    /// - Parameter bundle: 包
+    /// - Returns: 多语言
+    public func language(in bundle: Bundle?) -> String {
+        if let bundle {
+            if !bundle.isLoaded { bundle.load() }
+            let language = "zh-Hans"
+            if let path = bundle.path(forResource: language, ofType: "lproj"), let languageBundle = Bundle(path: path) {
+                return NSLocalizedString(self, tableName: nil, bundle: languageBundle, value: "", comment: "")
+            }
+            return NSLocalizedString(self, tableName: nil, bundle: bundle, value: "", comment: "")
+        }
+        return self
+    }
+    
+    /// 多语言带参读取
+    /// - Parameter bundle: 包名
+    /// - Parameter args: 参数
+    /// - Returns: 多语言
+    public func language(in bundle: Bundle?, args: CVarArg...) -> String {
+        return String(format: language(in: bundle), args)
+    }
+    
+    public func language(in bundle: Bundle?, args: String, args1: String) -> String {
+        return String(format: language(in: bundle), args, args1)
+    }
+    
+    public func language(in bundle: Bundle?, args: String) -> String {
+        return String(format: language(in: bundle), args)
     }
 }
