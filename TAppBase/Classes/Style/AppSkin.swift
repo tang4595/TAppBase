@@ -20,12 +20,16 @@ public class AppSkin {
     private var listableColors = [String: [UIColor]]()
     /// 夜间模式
     private var isDark = false
+    /// 外部配置Bundle
+    private var bundles: AppSkin.ColorsBundle?
+    /// 夜间默认Bundle
     private var darkBundle: Bundle? {
         let frameworkBundle = Bundle.frameworkBundle(moduleName: "TAppBase")
         guard let resourceBundlePath = frameworkBundle?.url(forResource: "TAppBaseDarkResource", withExtension: "bundle") else { return nil }
         let resourceBundle = Bundle(url: resourceBundlePath)
         return resourceBundle
     }
+    /// 日间默认Bundle
     private var normalBundle: Bundle? {
         let frameworkBundle = Bundle.frameworkBundle(moduleName: "TAppBase")
         guard let resourceBundlePath = frameworkBundle?.url(forResource: "TAppBaseResource", withExtension: "bundle") else { return nil }
@@ -34,7 +38,19 @@ public class AppSkin {
     }
 }
 
+// MARK: Define
+
 public extension AppSkin {
+    
+    public struct ColorsBundle {
+        public var normalPath: String
+        public var darkPath: String
+    }
+}
+
+// MARK: Private
+
+private extension AppSkin {
     
     func setupColors(_ colorsPlistBundlePath: String?) {
         guard
@@ -42,6 +58,29 @@ public extension AppSkin {
             let colors = NSDictionary(contentsOfFile: path ?? "") as? [String: String]
         else { return }
         self.colorPlist = colors
+    }
+}
+
+// MARK: Public
+
+public extension AppSkin {
+    
+    func setup(withBundle bundle: AppSkin.ColorsBundle? = nil) {
+        guard let bundle else {
+            let _ = color(key: "C1")
+            return
+        }
+        let path = isDark ? bundle.darkPath : bundle.normalPath
+        setupColors(path)
+    }
+    
+    func reload() {
+        var bundle = bundles
+        if bundle == nil {
+            bundle = .init(normalPath: normalBundle?.path(forResource: "AppColors", ofType: "plist") ?? "",
+                           darkPath: darkBundle?.path(forResource: "AppColors", ofType: "plist") ?? "")
+        }
+        setup(withBundle: bundle)
     }
 }
 
@@ -85,6 +124,8 @@ public extension AppSkin {
         return colors
    }
 }
+
+// MARK: Util
 
 private extension String {
     
