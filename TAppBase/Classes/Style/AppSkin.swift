@@ -45,6 +45,11 @@ public extension AppSkin {
     public struct ColorsBundle {
         public var normalPath: String
         public var darkPath: String
+        
+        public init(normalPath: String, darkPath: String) {
+            self.normalPath = normalPath
+            self.darkPath = darkPath
+        }
     }
 }
 
