@@ -76,6 +76,7 @@ public extension AppSkin {
             return
         }
         let path = isDark ? bundle.darkPath : bundle.normalPath
+        bundles = bundle
         setupColors(path)
     }
     

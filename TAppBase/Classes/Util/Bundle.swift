@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Bundle {
+public extension Bundle {
     
     static func frameworkBundle(moduleName: String) -> Bundle? {
         if var bundleURL = Bundle.main.url(forResource: "Frameworks", withExtension: nil) {

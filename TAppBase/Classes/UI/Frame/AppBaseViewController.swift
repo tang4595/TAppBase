@@ -19,9 +19,6 @@ open class AppBaseViewController: UIViewController {
 }
 
 open class AppScrollViewController: AppBaseViewController {
-    
-    private let disposeBag = DisposeBag()
-    
     public var scrollView = TPKeyboardAvoidingScrollView()
     public var automaticallyUnfocus = true
     public var contentView: UIView = UIView()

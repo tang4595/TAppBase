@@ -33,4 +33,6 @@ public struct LayoutStyle {
     public struct CollectionView {
         static let heightForHeaderInSection: CGFloat = 40
     }
+    
+    public init() {}
 }
