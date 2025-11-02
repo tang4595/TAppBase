@@ -120,7 +120,7 @@ public extension GlobalCountdownUtil {
     /// 注册目标类
     /// - Parameter target: `TimeableProtocol`
     func register<T: TimeableProtocol>(_ target: T) {
-        queue.async { [weak self] in
+        queue.async { [weak self, target] in
             guard let self else { return }
             self.lock.lock()
             defer { self.lock.unlock() }
@@ -135,11 +135,12 @@ public extension GlobalCountdownUtil {
     /// 取消目标类监听
     /// - Parameter target: `TimeableProtocol`
     func cancel(_ target: TimeableProtocol) {
-        queue.async { [weak self] in
+        let identifier = target.identifier()
+        queue.async { [weak self, identifier] in
             guard let self else { return }
             self.lock.lock()
             defer { self.lock.unlock() }
-            self.targets.removeAll(where: { $0.pointer?.identifier() == target.identifier() })
+            self.targets.removeAll(where: { $0.pointer?.identifier() == identifier })
         }
     }
 }

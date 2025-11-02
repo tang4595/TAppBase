@@ -9,8 +9,11 @@ import Foundation
 
 public extension Bundle {
     
-    static func frameworkBundle(moduleName: String) -> Bundle? {
-        if var bundleURL = Bundle.main.url(forResource: "Frameworks", withExtension: nil) {
+    static func frameworkBundle(moduleName: String, isDynamicFramework: Bool = true) -> Bundle? {
+        if isDynamicFramework {
+            guard var bundleURL = Bundle.main.url(forResource: "Frameworks", withExtension: nil) else {
+                return nil
+            }
             if #available(iOS 16.0, *) {
                 bundleURL = bundleURL.appending(component: moduleName)
             } else {
@@ -18,12 +21,13 @@ public extension Bundle {
             }
             bundleURL = bundleURL.appendingPathExtension("framework")
             return Bundle(url: bundleURL)
+        } else {
+            return Bundle.main
         }
-        return nil
     }
     
-    static func fetchImage(imageName: String, moduleName: String, bundleName: String) -> UIImage? {
-        if let bundle = frameworkBundle(moduleName: moduleName),
+    static func fetchImage(imageName: String, moduleName: String, bundleName: String, isDynamicFramework: Bool = true) -> UIImage? {
+        if let bundle = frameworkBundle(moduleName: moduleName, isDynamicFramework: isDynamicFramework),
            let tempBundleURL = bundle.url(forResource: bundleName, withExtension: "bundle"),
            let tempBundle = Bundle(url: tempBundleURL) {
             return UIImage(named: imageName, in: tempBundle, compatibleWith: nil)
@@ -31,8 +35,8 @@ public extension Bundle {
         return nil
     }
     
-    static func fetchFilePath(fileName: String, moduleName: String, bundleName: String) -> String? {
-        if let bundle = frameworkBundle(moduleName: moduleName),
+    static func fetchFilePath(fileName: String, moduleName: String, bundleName: String, isDynamicFramework: Bool = true) -> String? {
+        if let bundle = frameworkBundle(moduleName: moduleName, isDynamicFramework: isDynamicFramework),
            let tempBundleURL = bundle.url(forResource: bundleName, withExtension: "bundle"),
            let tempBundle = Bundle(url: tempBundleURL),
            let file = tempBundle.path(forResource: fileName, ofType: nil) {
