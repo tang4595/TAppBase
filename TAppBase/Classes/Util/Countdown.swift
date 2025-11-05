@@ -9,8 +9,8 @@ import Foundation
 
 /// 全局倒计时能力协议
 public protocol TimeableProtocol: AnyObject {
-    /// 定时间隔
-    func duration() -> TimeInterval?
+    /// 定时间隔（单位S）
+    func duration() -> Int
     
     /// 对象唯一标识
     func identifier(_ file: String) -> String
@@ -26,8 +26,8 @@ public protocol TimeableProtocol: AnyObject {
 
 public extension TimeableProtocol {
     
-    func duration() -> TimeInterval? {
-        return nil
+    func duration() -> Int {
+        return 1
     }
     
     func identifier(_ file: String = #file) -> String {
@@ -42,9 +42,9 @@ public extension TimeableProtocol {
 
 // MARK: Util
 
-public class GlobalCountdownUtil: NSObject {
+public class TGlobalCountdownUtil: NSObject {
     
-    public static let shared = GlobalCountdownUtil()
+    public static let shared = TGlobalCountdownUtil()
     
     private lazy var timer = Timer(timeInterval: Constants.defaultInterval,
                                    target: self,
@@ -55,7 +55,7 @@ public class GlobalCountdownUtil: NSObject {
     private var targets: [TimeableWeakReference<TimeableProtocol>] = []
     private let queue = DispatchQueue(label: "app.base.countdown.global")
     private let lock = NSRecursiveLock()
-    private var last: TimeInterval = 0
+    private var last: Int = 0
     
     private override init() {
         super.init()
@@ -81,7 +81,7 @@ fileprivate class TimeableWeakReference<T> {
 
 // MARK: Action
 
-private extension GlobalCountdownUtil {
+private extension TGlobalCountdownUtil {
     
     @objc func countdown() {
         #if DEBUG
@@ -93,14 +93,10 @@ private extension GlobalCountdownUtil {
             self.lock.lock()
             defer { self.lock.unlock() }
             
+            self.last += 1
             self.targets.forEach {
-                if let customInterval = $0.pointer?.duration() {
-                    let current = Date().timeIntervalSince1970
-                    if current - self.last >= customInterval {
-                        self.last = current
-                        $0.pointer?.onCountdown()
-                    }
-                } else {
+                let interval = $0.pointer?.duration() ?? 1
+                if self.last % interval == 0 {
                     $0.pointer?.onCountdown()
                 }
             }
@@ -110,7 +106,7 @@ private extension GlobalCountdownUtil {
 
 // MARK: Public
 
-public extension GlobalCountdownUtil {
+public extension TGlobalCountdownUtil {
     
     /// 启动全局倒计时工具
     func enable() {
